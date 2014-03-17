@@ -169,19 +169,22 @@ namespace LogWatcher
 
         private void AddDirAsTarget(string dirPath)
         {
-            DirectoryInfo dir = new DirectoryInfo(dirPath);
-
-            FileInfo[] filesInDir = dir.GetFiles();
-            foreach (FileInfo file in filesInDir)
+            if (Directory.Exists(dirPath))
             {
-                string filename = file.Name;
+                DirectoryInfo dir = new DirectoryInfo(dirPath);
 
-                if (Regex.IsMatch(filename, @".+\.log$", RegexOptions.IgnoreCase))
+                FileInfo[] filesInDir = dir.GetFiles();
+                foreach (FileInfo file in filesInDir)
                 {
-                    WatchingFile watchFile = new WatchingFile(file);
-                    Debug.WriteLine(watchFile.FullName);
-                    Console.WriteLine(" + " + watchFile.FullName);
-                    this.watchFiles.Add(watchFile);
+                    string filename = file.Name;
+
+                    if (Regex.IsMatch(filename, @".+\.log$", RegexOptions.IgnoreCase))
+                    {
+                        WatchingFile watchFile = new WatchingFile(file);
+                        Debug.WriteLine(watchFile.FullName);
+                        Console.WriteLine(" + " + watchFile.FullName);
+                        this.watchFiles.Add(watchFile);
+                    }
                 }
             }
         }

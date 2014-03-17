@@ -180,10 +180,7 @@ namespace LogWatcher
 
                     if (Regex.IsMatch(filename, @".+\.log$", RegexOptions.IgnoreCase))
                     {
-                        WatchingFile watchFile = new WatchingFile(file);
-                        Debug.WriteLine(watchFile.FullName);
-                        Console.WriteLine(" + " + watchFile.FullName);
-                        this.watchFiles.Add(watchFile);
+                        AddFileToWatchingList(file);
                     }
                 }
             }
@@ -195,11 +192,24 @@ namespace LogWatcher
 
             if(file.Exists)
             {
-                WatchingFile watchFile = new WatchingFile(file);
+                AddFileToWatchingList(file);
+            }
+        }
+
+        private void AddFileToWatchingList(FileInfo file)
+        {
+            WatchingFile watchFile = new WatchingFile(file);
+            if (watchFile.FileEncoding != null)
+            {
                 Debug.WriteLine(watchFile.FullName);
                 Console.WriteLine(" + " + watchFile.FullName);
                 this.watchFiles.Add(watchFile);
             }
+            else
+            {
+                Debug.WriteLine("[Can't detect encoding. Skip this file.]" + watchFile.FullName);
+                Console.WriteLine(" - [Can't detect encoding. Skip this file.]" + watchFile.FullName);
+            };
         }
 
         /// <summary>

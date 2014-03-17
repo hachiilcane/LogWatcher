@@ -24,6 +24,13 @@ namespace LogWatcher
             set { fullName = value; }
         }
 
+        private Encoding fileEncoding;
+        public Encoding FileEncoding
+        {
+            get { return fileEncoding; }
+            set { fileEncoding = value; }
+        }
+
         private DateTime lastWriteTime;
 
         public DateTime LastWriteTime
@@ -89,7 +96,24 @@ namespace LogWatcher
             this.fullName = fileInfo.FullName;
             this.lastWriteTime = fileInfo.LastWriteTime;
             this.length = fileInfo.Length;
-            ReadLastLogTime();
+            DetectEncoding();
+            if (FileEncoding != null)
+            {
+                ReadLastLogTime();
+            }
+        }
+
+        private void DetectEncoding()
+        {
+            using (FileStream fs = new FileStream(
+                this.fullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                byte[] bytes = new byte[fs.Length];
+                fs.Read(bytes, 0, bytes.Length);
+
+                Encoding encode = EncodingDetector.DetectEncoding(bytes);
+                FileEncoding = encode;
+            }
         }
 
         private void ReadLastLogTime()
@@ -114,7 +138,7 @@ namespace LogWatcher
             using (FileStream fs = new FileStream(
                 this.fullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                using (StreamReader reader = new StreamReader(fs))
+                using (StreamReader reader = new StreamReader(fs, FileEncoding))
                 {
                     string line;
                     while ((line = reader.ReadLine()) != null)

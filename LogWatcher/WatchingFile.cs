@@ -15,6 +15,7 @@ namespace LogWatcher
         public Regex LogTime2 = new Regex(@"^(\d\d\d\d)\/(\d\d)\/(\d\d) (\d\d):(\d\d):(\d\d)\.(\d\d\d)");
 
         bool lineCountMode = false;
+        long lastLineCount = -1;
 
         private string fullName;
 
@@ -72,19 +73,39 @@ namespace LogWatcher
                 this.lastWriteTime = info.LastWriteTime;
                 this.length = info.Length;
 
-                if (this.lastReadLogTime == new DateTime())
+                if (this.lineCountMode)
                 {
-                    ReadLastLogTime();
-                    return newLines;
-                }
+                    if (this.lastLineCount < 0)
+                    {
+                        ReadLastLine();
+                        return newLines;
+                    }
 
-                try
-                {
-                    newLines = ReadLog(true);
+                    try
+                    {
+                        newLines = ReadLogWithLineCount(true);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("can't read " + this.fullName);
+                    }
                 }
-                catch (Exception)
+                else
                 {
-                    Console.WriteLine("can't read " + this.fullName);
+                    if (this.lastReadLogTime == new DateTime())
+                    {
+                        ReadLastLogTime();
+                        return newLines;
+                    }
+
+                    try
+                    {
+                        newLines = ReadLog(true);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("can't read " + this.fullName);
+                    }
                 }
             }
 
@@ -99,7 +120,10 @@ namespace LogWatcher
             DetectEncoding();
             if (FileEncoding != null)
             {
-                ReadLastLogTime();
+                if (this.lineCountMode)
+                    ReadLastLine();
+                else
+                    ReadLastLogTime();
             }
         }
 
@@ -121,6 +145,18 @@ namespace LogWatcher
             try
             {
                 ReadLog(false);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("can't open " + this.fullName + ". Failed in first reading.");
+            }
+        }
+
+        private void ReadLastLine()
+        {
+            try
+            {
+                ReadLogWithLineCount(false);
             }
             catch (Exception)
             {
@@ -168,6 +204,65 @@ namespace LogWatcher
 
             if (lastLogTime > this.lastReadLogTime)
                 this.lastReadLogTime = lastLogTime;
+
+            return needsNewLines ? newLines : null;
+        }
+
+        private List<string> ReadLogWithLineCount(bool needsNewLines)
+        {
+            List<string> newLines = new List<string>();
+
+            long lineCount = 0;
+
+            using (FileStream fs = new FileStream(
+                this.fullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (StreamReader reader = new StreamReader(fs, FileEncoding))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        lineCount++;
+
+                        if (needsNewLines)
+                        {
+                            if (lineCount > this.lastLineCount)
+                            {
+                                newLines.Add(line);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // maybe the log was rotated...
+            if (needsNewLines && lineCount < this.lastLineCount)
+            {
+                this.lastLineCount = 0;
+
+                using (FileStream fs = new FileStream(
+                    this.fullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    using (StreamReader reader = new StreamReader(fs, FileEncoding))
+                    {
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            lineCount++;
+
+                            if (needsNewLines)
+                            {
+                                if (lineCount > this.lastLineCount)
+                                {
+                                    newLines.Add(line);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            this.lastLineCount = lineCount;
 
             return needsNewLines ? newLines : null;
         }

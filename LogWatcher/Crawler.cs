@@ -198,7 +198,8 @@ namespace LogWatcher
 
         private void AddFileToWatchingList(FileInfo file)
         {
-            WatchingFile watchFile = new WatchingFile(file);
+            bool lineCountMode = true;
+            WatchingFile watchFile = new WatchingFile(file, lineCountMode);
             if (watchFile.FileEncoding != null)
             {
                 Debug.WriteLine(watchFile.FullName);

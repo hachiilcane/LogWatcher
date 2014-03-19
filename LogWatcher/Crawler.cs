@@ -23,7 +23,7 @@ namespace LogWatcher
 
         private const int LimitNotifyingCountAtOnce = 25;
 
-        private Growl growl;
+        private GrowlGNTP growl;
         private string targetDirs;
         private string targetFiles;
         private int watchingInterval;
@@ -109,7 +109,7 @@ namespace LogWatcher
         {
             Settings1 s = new Settings1();
 
-            this.growl = new Growl(RemoveDoubleQuotations(s.GrowlNotifyPath));
+            this.growl = new GrowlGNTP();
             this.growl.ApplicationName = ApplicationNameForGrowl;
             this.growl.NotificationName = NotificationNameForGrowl;
             this.growl.RegisterForGrowl();

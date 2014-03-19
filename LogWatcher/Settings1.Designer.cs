@@ -97,18 +97,6 @@ namespace LogWatcher {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Growl for Windows\\growlnotify")]
-        public string GrowlNotifyPath {
-            get {
-                return ((string)(this["GrowlNotifyPath"]));
-            }
-            set {
-                this["GrowlNotifyPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string TargetFiles {
             get {

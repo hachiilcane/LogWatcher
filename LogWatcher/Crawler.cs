@@ -112,7 +112,9 @@ namespace LogWatcher
             this.growl = new GrowlGNTP();
             this.growl.ApplicationName = ApplicationNameForGrowl;
             this.growl.NotificationName = NotificationNameForGrowl;
-            this.growl.RegisterForGrowl();
+            this.growl.RegisterForGrowl(RemoveDoubleQuotations(s.GrowlPassword),
+                RemoveDoubleQuotations(s.GrowlHostName),
+                RemoveDoubleQuotations(s.GrowlTcpPort));
 
             this.targetDirs = s.TargetDirs;
             this.targetFiles = s.TargetFiles;

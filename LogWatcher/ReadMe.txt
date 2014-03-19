@@ -103,13 +103,6 @@ TargetFiles
 　例：
 　　C:\Temp\log\rotation.log,C:\App\log\system.log
 
-GrowlNotifyPath
-
-　Growl for Windowsに同梱されている、growlnotify.comのパスを指定します。
-　最後の".com"はいりません。
-　例：
-　　C:\Program Files\Growl for Windows\growlnotify
-
 ErrorWordsIgnoreCase
 
 　エラーとしてGrowlに通知したいキーワードを指定します。正規表現で記述
@@ -135,6 +128,21 @@ NormalWords
 WatchingInterval
 
 　ファイルの更新をチェックする周期を指定します。単位はmsecです。
+
+GrowlPassword
+
+　Growlにパスワードが設定されている場合に指定します。設定されていない
+　場合は空にします。
+
+GrowlHostName
+
+　リモートにあるGrowlを利用する場合にホスト名を指定します。必要なければ
+　空にします。
+
+GrowlTcpPort
+
+　リモートにあるGrowlを利用する場合にポート番号を指定します。必要なけれ
+　ば空にします。
 
 ------------------------------------------------------------
 ■Growl for Windows側のカスタマイズ

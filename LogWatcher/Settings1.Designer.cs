@@ -106,5 +106,41 @@ namespace LogWatcher {
                 this["TargetFiles"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GrowlPassword {
+            get {
+                return ((string)(this["GrowlPassword"]));
+            }
+            set {
+                this["GrowlPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GrowlHostName {
+            get {
+                return ((string)(this["GrowlHostName"]));
+            }
+            set {
+                this["GrowlHostName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GrowlTcpPort {
+            get {
+                return ((string)(this["GrowlTcpPort"]));
+            }
+            set {
+                this["GrowlTcpPort"] = value;
+            }
+        }
     }
 }

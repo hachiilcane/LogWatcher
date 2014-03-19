@@ -31,13 +31,22 @@ namespace LogWatcher
         {
         }
 
-        public void RegisterForGrowl()
+        public void RegisterForGrowl(string password, string hostName, string tcpPort)
         {
             this.notificationType = new NotificationType(NotificationName, NotificationName);
 
-            this.growl = new GrowlConnector();
-            //this.growl = new GrowlConnector("password");    // use this if you need to set a password - you can also pass null or an empty string to this constructor to use no password
-            //this.growl = new GrowlConnector("password", "hostname", GrowlConnector.TCP_PORT);   // use this if you want to connect to a remote Growl instance on another machine
+            int portNum;
+            bool isValidPortNum = int.TryParse(tcpPort, out portNum);
+            if (!string.IsNullOrEmpty(hostName) && isValidPortNum)
+            {
+                // use this if you want to connect to a remote Growl instance on another machine
+                this.growl = new GrowlConnector(password, hostName, portNum);
+            }
+            else
+            {
+                // use this if you need to set a password - you can also pass null or an empty string to this constructor to use no password
+                this.growl = new GrowlConnector(password);
+            }  
 
             //this.growl.NotificationCallback += new GrowlConnector.CallbackEventHandler(growl_NotificationCallback);
 
